@@ -73,3 +73,12 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Xcode workspace and CocoaPods lock files
+ios/Podfile.lock
+ios/*.xcworkspace/
+
+# IDE / Editors
+.vscode/
+.expo/
+
