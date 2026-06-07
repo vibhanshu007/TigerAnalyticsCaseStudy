@@ -4,34 +4,82 @@ A high-performance, single-page React Native application designed to import, que
 
 ---
 
-## 1. System Context Diagram
+## 1. Environment Setup & Configuration Setup
+
+### Prerequisites
+Before running the application, make sure you have the following setup on your system:
+- **Node.js**: Version 18 or newer.
+- **Android SDK & Build Tools**: Set up for Android development (Android Studio, emulator configured).
+- **macOS / Xcode** (Optional): For running the iOS platform client (requires Cocoapods installed).
+
+### Step 1: Install Dependencies
+Ensure you are in the workspace root directory and install npm packages:
+```sh
+npm install
+```
+
+### Step 2: Start the Metro Bundler
+Start the Metro JavaScript build server:
+```sh
+npm start
+```
+
+### Step 3: Compile and Run the App
+With the Metro server running, open a new terminal window and run the platform target:
+
+#### For Android (Emulator or Connected Device)
+Ensure your AVD emulator is active:
+```sh
+npm run android
+```
+
+#### For iOS (macOS only)
+First, install iOS CocoaPods dependencies:
+```sh
+bundle install
+bundle exec pod install
+```
+Then run the iOS compiler client:
+```sh
+npm run ios
+```
+
+### Step 4: Run the Jest Test Suite
+Verify parser validations and storage lookup indices are fully operational:
+```sh
+npm test
+```
+
+---
+
+## 2. System Context Diagram
 
 The following context diagram illustrates how the offline-first React Native application interacts with store operators, local device files, and the central retail enterprise database (ERP).
 
 ```mermaid
 graph TD
-    StoreManager[Store Manager / User] -- Imports CSV & Edits Prices --> App[React Native Client App]
-    LocalFiles[Local Device Files] -- Read CSV Feed --> App
+    StoreManager["Store Manager / User"] -- "Imports CSV & Edits Prices" --> App["React Native Client App"]
+    LocalFiles["Local Device Files"] -- "Read CSV Feed" --> App
     
-    subgraph Client Boundary (Offline-First)
-        App --> Storage[Storage Service Interface]
-        Storage --> IndexEngine[In-Memory Index Manager]
-        Storage --> LocalDB[Local Persistence Engine JSON/SQLite]
+    subgraph ClientBoundary ["Client Boundary (Offline-First)"]
+        App --> Storage["Storage Service Interface"]
+        Storage --> IndexEngine["In-Memory Index Manager"]
+        Storage --> LocalDB["Local Persistence Engine JSON/SQLite"]
     end
     
-    subgraph Corporate Network (Online Sync)
-        App -- Sync / Conflicts Reconciled --> SyncAPI[Central Sync API Gateway]
-        SyncAPI --> ERP[Central Retail ERP Database]
-        ERP --> Analytics[Business Intelligence & Analytics]
+    subgraph CorporateNetwork ["Corporate Network (Online Sync)"]
+        App -- "Sync / Conflicts Reconciled" --> SyncAPI["Central Sync API Gateway"]
+        SyncAPI --> ERP["Central Retail ERP Database"]
+        ERP --> Analytics["Business Intelligence & Analytics"]
     end
     
     classDef boundary fill:#1e293b,stroke:#3b82f6,stroke-width:2px;
-    class Client,Corporate boundary;
+    class ClientBoundary,CorporateNetwork boundary;
 ```
 
 ---
 
-## 2. Solution Architecture
+## 3. Solution Architecture
 
 The client-side solution is structured into three decoupled layers:
 
@@ -56,7 +104,7 @@ The client-side solution is structured into three decoupled layers:
 
 ### Module Breakdown:
 1. **Presentation Layer (UI)**:
-   - **Main View (`App.tsx`)**: Orchestrates the state, safe-area layout, coordinates pagination, and links modals.
+   - **Main View (`App.tsx`)**: Orchestrates state, safe-area layout, coordinates pagination, and links modals.
    - **Metrics Dashboard (`StatsDashboard.tsx`)**: Renders a compact, single-row global statistics overview (Pricing Records, Active Stores, Catalog SKUs, and 24h modifications count).
    - **CSV Importer (`CSVImporter.tsx`)**: Integrates document picker triggers and displays line-by-line validation reports.
    - **Fuzzy Search Engine (`SearchFilters.tsx`)**: Provides range boundary inputs, country badges, sorting triggers, and hooks search text to the index search query.
@@ -73,7 +121,7 @@ The client-side solution is structured into three decoupled layers:
 
 ---
 
-## 3. Design Decisions
+## 4. Design Decisions
 
 | Decision | Selected Approach | Rationale / Benefits |
 | :--- | :--- | :--- |
@@ -86,7 +134,7 @@ The client-side solution is structured into three decoupled layers:
 
 ---
 
-## 4. Non-Functional Requirements (NFR) Analysis
+## 5. Non-Functional Requirements (NFR) Analysis
 
 Operating a retail chain with **3,000 stores across multiple countries** introduces unique constraints. The design addresses these as follows:
 
@@ -106,7 +154,7 @@ Operating a retail chain with **3,000 stores across multiple countries** introdu
 
 ---
 
-## 5. System Assumptions
+## 6. System Assumptions
 
 1. **Store ID Mapping**: It is assumed Store IDs contain country indicators (e.g., `STORE_US`) or are matched to metadata records containing currency types.
 2. **Device Capacity**: The local device has sufficient flash storage (typically $< 50\text{MB}$ for standard store databases) to persist records.
@@ -114,7 +162,7 @@ Operating a retail chain with **3,000 stores across multiple countries** introdu
 
 ---
 
-## 6. Source Code Directory
+## 7. Source Code Directory
 
 The core source files implementing this architecture are:
 * **Entry Point**: [App.tsx](file:///Users/vibhanshu/Documents/development/Test/TigerAnalyticsCaseStudy/App.tsx)
@@ -129,24 +177,3 @@ The core source files implementing this architecture are:
   - [src/components/SearchFilters.tsx](file:///Users/vibhanshu/Documents/development/Test/TigerAnalyticsCaseStudy/src/components/SearchFilters.tsx)
   - [src/components/RecordCard.tsx](file:///Users/vibhanshu/Documents/development/Test/TigerAnalyticsCaseStudy/src/components/RecordCard.tsx)
   - [src/components/EditModal.tsx](file:///Users/vibhanshu/Documents/development/Test/TigerAnalyticsCaseStudy/src/components/EditModal.tsx)
-
----
-
-## 7. How to Run Locally
-
-### Step 1: Start Metro
-First, start the **Metro** JavaScript bundler packager:
-```sh
-npm start
-```
-
-### Step 2: Build and run the Platform Client
-Open a separate terminal window and build the application on your simulator/device:
-* **Android**: `npm run android`
-* **iOS**: `npm run ios` (requires `bundle install` and `bundle exec pod install` on macOS)
-
-### Step 3: Run the Test Suite
-Ensure all test cases run and pass:
-```sh
-npm test
-```
