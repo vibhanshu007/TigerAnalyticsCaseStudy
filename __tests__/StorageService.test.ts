@@ -150,4 +150,40 @@ describe('StorageService & IndexManager', () => {
     expect(res.totalCount).toBe(1);
     expect(res.records[0].storeId).toBe('STORE_US');
   });
+
+  it('filters country correctly using dynamic stores from CSV mapping', async () => {
+    await storageService.importRecords([
+      { storeId: '1001', sku: 'SKU001', productName: 'Product 1', price: 125, date: '2026-06-06', country: 'US' },
+      { storeId: '1002', sku: 'SKU002', productName: 'Product 2', price: 150, date: '2026-06-05', country: 'UK' },
+      { storeId: '1003', sku: 'SKU003', productName: 'Product 3', price: 175, date: '2026-06-04', country: 'IND' },
+      { storeId: '1004', sku: 'SKU004', productName: 'Product 4', price: 200, date: '2026-06-03', country: 'EU' },
+      { storeId: '1005', sku: 'SKU005', productName: 'Product 5', price: 225, date: '2026-06-02', country: 'JP' },
+      { storeId: '1006', sku: 'SKU006', productName: 'Product 6', price: 250, date: '2026-06-01', country: 'US' },
+      { storeId: '1007', sku: 'SKU007', productName: 'Product 7', price: 275, date: '2026-05-31', country: 'UK' },
+      { storeId: '1008', sku: 'SKU008', productName: 'Product 8', price: 300, date: '2026-05-30', country: 'IND' },
+      { storeId: '1009', sku: 'SKU009', productName: 'Product 9', price: 325, date: '2026-05-29', country: 'EU' },
+      { storeId: '1000', sku: 'SKU010', productName: 'Product 10', price: 350, date: '2026-05-28', country: 'JP' },
+    ]);
+
+    // Test US filter (should get 1001, 1006)
+    let res = await storageService.getRecords({ storeId: 'US' });
+    expect(res.records.map(r => r.storeId).sort()).toEqual(['1001', '1006']);
+
+    // Test UK filter (should get 1002, 1007)
+    res = await storageService.getRecords({ storeId: 'UK' });
+    expect(res.records.map(r => r.storeId).sort()).toEqual(['1002', '1007']);
+
+    // Test IN filter (should get 1003, 1008)
+    res = await storageService.getRecords({ storeId: 'IN' });
+    expect(res.records.map(r => r.storeId).sort()).toEqual(['1003', '1008']);
+
+    // Test EU filter (should get 1004, 1009)
+    res = await storageService.getRecords({ storeId: 'EU' });
+    expect(res.records.map(r => r.storeId).sort()).toEqual(['1004', '1009']);
+
+    // Test JP filter (should get 1000, 1005)
+    res = await storageService.getRecords({ storeId: 'JP' });
+    expect(res.records.map(r => r.storeId).sort()).toEqual(['1000', '1005']);
+  });
 });
+

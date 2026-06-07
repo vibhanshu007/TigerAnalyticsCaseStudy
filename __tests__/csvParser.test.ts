@@ -54,6 +54,22 @@ describe('CSV Parser', () => {
       });
     });
 
+    it('validates and maps row with country column successfully', () => {
+      const countryIndices = {
+        storeId: 0,
+        sku: 2,
+        productName: 3,
+        price: 4,
+        date: 5,
+        country: 1,
+      };
+      const row = ['1001', 'US', 'SKU_123', 'Tablet', '299.99', '2026-06-01'];
+      const result = validateAndMapRow(row, countryIndices, 1);
+      expect(result.valid).toBe(true);
+      expect(result.record?.country).toBe('US');
+      expect(result.record?.storeId).toBe('1001');
+    });
+
     it('flags missing Store ID', () => {
       const row = ['', 'SKU_123', 'Tablet', '299.99', '2026-06-01'];
       const result = validateAndMapRow(row, indices, 1);

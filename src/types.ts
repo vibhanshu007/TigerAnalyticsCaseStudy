@@ -7,6 +7,7 @@ export interface PricingRecord {
   date: string; // ISO date format (YYYY-MM-DD) representing feed date
   updatedAt: string; // ISO date format of last modification
   version: number; // Incrementing counter for conflict resolution / sync
+  country?: string; // Optional country code parsed from CSV
 }
 
 export interface AuditLogEntry {

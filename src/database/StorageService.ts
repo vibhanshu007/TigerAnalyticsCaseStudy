@@ -1,6 +1,6 @@
 import { PricingRecord, AuditLogEntry, SearchCriteria } from '../types';
 import { IndexManager } from './IndexManager';
-import { STORES_METADATA, getStoreMetadata } from './StoreMetadata';
+import { STORES_METADATA, getStoreMetadata, registerDynamicStore } from './StoreMetadata';
 
 export { getStoreMetadata };
 
@@ -37,6 +37,9 @@ class StorageService {
           const parsed = JSON.parse(storedRecs) as PricingRecord[];
           for (const rec of parsed) {
             this.records.set(rec.id, rec);
+            if (rec.country) {
+              registerDynamicStore(rec.storeId, rec.country);
+            }
           }
         }
         if (storedLogs) {
@@ -92,6 +95,9 @@ class StorageService {
     const nowStr = new Date().toISOString();
 
     for (const rec of newRecords) {
+      if (rec.country) {
+        registerDynamicStore(rec.storeId, rec.country);
+      }
       const id = `${rec.storeId.toUpperCase()}_${rec.sku.toUpperCase()}`;
       const existing = this.records.get(id);
 
@@ -106,6 +112,7 @@ class StorageService {
           if (existing.price !== rec.price) changes.push(`price: ${existing.price} -> ${rec.price}`);
           if (existing.productName !== rec.productName) changes.push(`name: '${existing.productName}' -> '${rec.productName}'`);
           if (existing.date !== rec.date) changes.push(`date: ${existing.date} -> ${rec.date}`);
+          if (rec.country !== undefined && existing.country !== rec.country) changes.push(`country: ${existing.country} -> ${rec.country}`);
 
           if (changes.length > 0) {
             const updatedRec: PricingRecord = {
@@ -113,6 +120,7 @@ class StorageService {
               productName: rec.productName,
               price: rec.price,
               date: rec.date,
+              country: rec.country || existing.country,
               updatedAt: nowStr,
               version: existing.version + 1,
             };

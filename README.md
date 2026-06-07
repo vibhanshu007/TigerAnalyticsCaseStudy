@@ -2,6 +2,13 @@
 
 A high-performance, single-page React Native application designed to import, query, modify, and audit store pricing feeds offline-first. Bootstrapped with React Native v0.85.3 (New Architecture) and fully optimized for large network scales (3,000+ stores).
 
+
+## 📱 Application Demo / Screen Recording
+
+Below is a screen recording walkthrough showcasing the multithreaded CSV import, interactive line-by-line validations, dynamic country filter badges, pagination, and the database audit trails for manual adjustments:
+
+<video src="./demo.webm" width="100%" controls loop muted autoplay></video>
+
 ---
 
 ## 1. Environment Setup & Configuration Setup

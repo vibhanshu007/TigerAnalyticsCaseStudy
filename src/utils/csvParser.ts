@@ -84,6 +84,7 @@ export function validateAndMapRow(
     productName: number;
     price: number;
     date: number;
+    country?: number;
   },
   lineNumber: number
 ): ValidationResult {
@@ -92,7 +93,8 @@ export function validateAndMapRow(
     headerIndices.sku,
     headerIndices.productName,
     headerIndices.price,
-    headerIndices.date
+    headerIndices.date,
+    headerIndices.country !== undefined ? headerIndices.country : -1
   );
 
   if (row.length <= maxIdx) {
@@ -107,6 +109,7 @@ export function validateAndMapRow(
   const rawProductName = row[headerIndices.productName];
   const rawPrice = row[headerIndices.price];
   const rawDate = row[headerIndices.date];
+  const rawCountry = headerIndices.country !== undefined && headerIndices.country !== -1 ? row[headerIndices.country] : undefined;
 
   // 1. Store ID validation
   if (!rawStoreId) {
@@ -164,6 +167,7 @@ export function validateAndMapRow(
       productName,
       price,
       date: dateStr,
+      country: rawCountry ? rawCountry.trim() : undefined,
     },
   };
 }
@@ -192,6 +196,7 @@ export function parseCSVAsync(
     productName: -1,
     price: -1,
     date: -1,
+    country: -1,
   };
 
   // Find column indexes based on headers
@@ -207,6 +212,8 @@ export function parseCSVAsync(
       headerIndices.price = i;
     } else if (colName === 'date' || colName === 'pricingdate' || colName === 'effectiveat') {
       headerIndices.date = i;
+    } else if (colName === 'country' || colName === 'countrycode' || colName === 'nation') {
+      headerIndices.country = i;
     }
   }
 
