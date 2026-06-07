@@ -76,7 +76,7 @@ export function SearchFilters({ onFilterChange }: SearchFiltersProps) {
     setSortOrder('asc');
     
     onFilterChange({
-      query: query, // Keep query text
+      query: '',
       storeId: '',
       minPrice: undefined,
       maxPrice: undefined,
