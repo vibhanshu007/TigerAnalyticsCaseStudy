@@ -5,11 +5,9 @@ A high-performance, single-page React Native application designed to import, que
 
 ## 📱 Application Demo / Screen Recording
 
-Below is a screen recording walkthrough showcasing the multithreaded CSV import, interactive line-by-line validations, dynamic country filter badges, pagination, and the database audit trails for manual adjustments.
+Below is a screen recording walkthrough showcasing the multithreaded CSV import, interactive line-by-line validations, dynamic country filter badges, pagination, and the database audit trails for manual adjustments:
 
-Click the preview thumbnail below to play the video:
-
-[![Watch the Application Demo Video](./screenshot.png)](./demo.webm)
+[▶ Play the Application Demo Video (demo.webm)](./demo.webm)
 
 ---
 
